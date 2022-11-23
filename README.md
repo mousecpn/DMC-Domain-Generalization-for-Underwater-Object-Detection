@@ -65,13 +65,3 @@ $ python tools/test.py configs/suodac/dmc_faster_rcnn_r50_fpn_1x_suodac.py <path
 
 This repo also provides the re-implementation of JiGEN, MMD-AAE, CCSA, CIDDG, DANN, CrossGrad in Faster R-CNN framework.
 
-## Citation
-
-```
-@article{song2021achieving,
-  title={Achieving Domain Generalization in Underwater Object Detection by Image Stylization and Domain Mixup},
-  author={Song, Pinhao and Dai, Linhui and Yuan, Peipei and Liu, Hong and Ding, Runwei},
-  journal={arXiv preprint arXiv:2104.02230},
-  year={2021}
-}
-```
