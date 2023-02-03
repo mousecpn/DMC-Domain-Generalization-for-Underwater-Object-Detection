@@ -65,7 +65,7 @@ $ python tools/test.py configs/suodac/dmc_faster_rcnn_r50_fpn_1x_suodac.py <path
 
 This repo also provides the re-implementation of JiGEN, MMD-AAE, CCSA, CIDDG, DANN, CrossGrad in Faster R-CNN framework.
 
-### Citation
+## Citation
 
 ```
 @article{chen2023achieving,
