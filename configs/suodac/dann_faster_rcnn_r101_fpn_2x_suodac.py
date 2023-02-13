@@ -1,6 +1,19 @@
-_base_ = 'dann_faster_rcnn_r50_fpn_1x_suodac.py'
+_base_ = [
+    '../_base_/models/faster_rcnn_r50_fpn.py',
+    '../_base_/schedules/schedule_2x.py', '../_base_/default_runtime.py'
+]
 model = dict(
-    type='CrossGradFasterRCNN',
+    type='DANNFasterRCNN',
+    backbone=dict(
+        type='ResNet',
+        depth=101,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
+        style='pytorch',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet101')),
 )
 
 dataset_type = 'SUODACDataset'
@@ -37,8 +50,8 @@ test_pipeline = [
 
 
 data = dict(
-    samples_per_gpu = 1,
-    workers_per_gpu = 1,
+    samples_per_gpu = 2,
+    workers_per_gpu = 4,
     train = (
             dict(
                 type=dataset_type,

@@ -2,21 +2,21 @@ _base_ = [
     '../_base_/datasets/suodac_detection.py', '../_base_/schedules/schedule_2x.py','../_base_/default_runtime.py']
 model = dict(
     type='DGaugFasterRCNN',
-    # st_path="/home/dailh/Joint-Bilateral-Learning/checkpoints/epoch_6style_7.pth",
+    st_path="/home/dailh/Joint-Bilateral-Learning/checkpoints/epoch_6style_7.pth",
     # /home/dailh/Joint-Bilateral-Learning/checkpoints/ckpt_19_18480.pth
-    st_path="/home/dailh/mmdetection_old/CBST5.pth",
-    style_num=6,
+    # st_path="/home/dailh/mmdetection_old/CBST5.pth",
+    style_num=14,
     backbone=dict(
         type='HiddenMixupResNet',
         # type='ResNet',
-        depth=50,
+        depth=101,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
         style='pytorch',
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet101')),
     neck=dict(
         type='FPN',
         in_channels=[256, 512, 1024, 2048],
@@ -121,15 +121,15 @@ train_pipeline = [
     dict(type='LoadImageFromSUODAC', to_float32=True, train=True, domain_file=data_root+'VOC2007/ImageSets'),
     # dict(type='GeneratePuzzle',img_norm_cfg=img_norm_cfg,jig_classes = 30),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(
-        type='Expand',
-        mean=img_norm_cfg['mean'],
-        to_rgb=img_norm_cfg['to_rgb'],
-        ratio_range=(1, 4)),
-    dict(
-        type='MinIoURandomCrop',
-        min_ious=(0.1, 0.3, 0.5, 0.7, 0.9),
-        min_crop_size=0.3),
+    # dict(
+    #     type='Expand',
+    #     mean=img_norm_cfg['mean'],
+    #     to_rgb=img_norm_cfg['to_rgb'],
+    #     ratio_range=(1, 4)),
+    # dict(
+    #     type='MinIoURandomCrop',
+    #     min_ious=(0.1, 0.3, 0.5, 0.7, 0.9),
+    #     min_crop_size=0.3),
     dict(type='Resize', img_scale=(512, 512), keep_ratio=False),
     # dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
@@ -146,7 +146,7 @@ test_pipeline = [
     dict(type='LoadAnnotations', with_bbox=True),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(640, 640),
+        img_scale=(512, 512),
         # img_scale=(1333, 800),
         flip=False,
         transforms=[

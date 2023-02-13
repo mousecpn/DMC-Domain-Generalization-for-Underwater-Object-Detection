@@ -1,6 +1,6 @@
-_base_ = 'dann_faster_rcnn_r50_fpn_1x_suodac.py'
+_base_='dann_faster_rcnn_r101_fpn_2x_suodac.py'
 model = dict(
-    type='CrossGradFasterRCNN',
+    type='JiGENFasterRCNN',
 )
 
 dataset_type = 'SUODACDataset'
@@ -10,20 +10,25 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromSUODAC', to_float32=True, train=True, domain_file=data_root+'VOC2007/ImageSets'),
-    # dict(type='GeneratePuzzle',img_norm_cfg=img_norm_cfg,jig_classes = 30),
+    dict(type='GeneratePuzzle',img_norm_cfg=img_norm_cfg,jig_classes = 30),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
+    dict(type='Resize', img_scale=(768, 768), keep_ratio=False),
+    # dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels','domain_label']),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'img_puzzle', 'jig_labels']),
+    # dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'domain_label']),
+    # dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
 test_pipeline = [
     dict(type='LoadImageFromSUODAC', to_float32=True, train=True, domain_file=data_root+'VOC2007/ImageSets'),
+    # dict(type='LoadImageFromFile', to_float32=True),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 800),
+        img_scale=(768, 768),
+        # img_scale=(1333, 800),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=False),
@@ -37,8 +42,8 @@ test_pipeline = [
 
 
 data = dict(
-    samples_per_gpu = 1,
-    workers_per_gpu = 1,
+    samples_per_gpu = 4,
+    workers_per_gpu = 4,
     train = (
             dict(
                 type=dataset_type,
